@@ -20,6 +20,8 @@ public class UserController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private TokenProvider tokenProvider;
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
         try{
@@ -47,9 +49,11 @@ public class UserController {
         UserEntity user = userService.getByCredentials(userDTO.getEmail(), userDTO.getPassword());
 
         if(user != null){
+            final String token = tokenProvider.create(user);
             final UserDTO responseUserDTO = UserDTO.builder()
                     .email(user.getUsername())
                     .id(user.getId())
+                    .token(token)
                     .build();
             return ResponseEntity.ok(responseUserDTO);
         } else {
@@ -60,11 +64,11 @@ public class UserController {
         }
     }
 
-    @GetMapping("/token")
-    public ResponseEntity<?> getToken() throws JOSEException {
-        List<Object> tokens = new TokenProvider().Token2();
-        ResponseDTO<Object> response = ResponseDTO.builder().data(tokens).build();
-
-        return ResponseEntity.ok(response);
-    }
+//    @GetMapping("/token")
+//    public ResponseEntity<?> getToken() throws JOSEException {
+//        List<Object> tokens = new TokenProvider().Token2();
+//        ResponseDTO<Object> response = ResponseDTO.builder().data(tokens).build();
+//
+//        return ResponseEntity.ok(response);
+//    }
 }

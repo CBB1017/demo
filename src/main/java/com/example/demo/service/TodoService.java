@@ -32,7 +32,7 @@ public class TodoService {
 
         repository.save(entity);
 
-        log.info("Entity id : {} is saved.", entity.getId());
+        log.info("Entity id : {} is saved.");
 
         return repository.findByUserId(entity.getUserId());
     }
